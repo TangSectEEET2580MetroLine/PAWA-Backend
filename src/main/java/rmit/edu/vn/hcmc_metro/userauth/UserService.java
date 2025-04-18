@@ -55,6 +55,11 @@ public class UserService implements UserDetailsService {
         return userRepository.findByEmail(email); // Call the repository method
     }
 
+    // Get all users
+    public List<UserModel> getAllUsers() {
+        return userRepository.findAll(); // Fetch all users from the repository
+    }
+
     // Create JWT token with userId
     public String createAuthToken(UserDetails user, boolean isValidCredential, String userId) {
         if (isValidCredential) {

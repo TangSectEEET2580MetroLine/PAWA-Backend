@@ -4,7 +4,6 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import jakarta.persistence.Index;
 
 @Document(collection = "users") // Specify the MongoDB collection name
 public class UserModel {

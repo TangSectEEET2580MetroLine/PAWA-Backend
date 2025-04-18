@@ -18,6 +18,7 @@ import rmit.edu.vn.hcmc_metro.metro_line.MetroLineService;
 import rmit.edu.vn.hcmc_metro.userauth.UserModel;
 import rmit.edu.vn.hcmc_metro.userauth.UserService;
 
+//testing data only, add a ticketType generator after finish for better encapsulation
 @Component
 public class DataGenerator implements CommandLineRunner {
 
