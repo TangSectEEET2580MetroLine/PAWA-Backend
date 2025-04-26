@@ -60,4 +60,25 @@ public class TicketController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
+
+    @PostMapping("/purchase")
+    public ResponseEntity<String> purchaseTicket(@RequestBody PurchaseTicketRequest request) {
+        try {
+            ticketService.purchaseTicket(request);
+            return new ResponseEntity<>("Ticket purchased successfully!", HttpStatus.CREATED);
+        } catch (RuntimeException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<Ticket>> getTicketsByUserId(@PathVariable String userId) {
+        List<Ticket> tickets = ticketService.getTicketsByUserId(userId);
+        if (tickets.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<>(tickets, HttpStatus.OK);
+    }
+
 }
