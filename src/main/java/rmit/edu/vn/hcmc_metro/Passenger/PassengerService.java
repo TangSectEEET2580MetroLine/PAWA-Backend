@@ -3,12 +3,20 @@ package rmit.edu.vn.hcmc_metro.Passenger;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import rmit.edu.vn.hcmc_metro.wallet.WalletRepository;
+import rmit.edu.vn.hcmc_metro.wallet.Wallet;
 
 @Component
 public class PassengerService {
 
+    private final WalletRepository walletRepository;
+
     @Autowired
     private PassengerRepository passengerRepository;
+
+    PassengerService(WalletRepository walletRepository) {
+        this.walletRepository = walletRepository;
+    }
 
     public List<Passenger> getAllPassengers() {
         return passengerRepository.findAll();
@@ -20,10 +28,14 @@ public class PassengerService {
 
     public void addPassenger(Passenger passenger) {
         passengerRepository.save(passenger);
+        walletRepository.findByUserId(passenger.getUserId())
+            .orElseGet(() -> walletRepository.save(new Wallet(passenger.getUserId(), 0)));
     }
 
     public void addPassengers(List<Passenger> passengers) {
-        passengerRepository.saveAll(passengers);
+        for (Passenger p: passengers) {
+            addPassenger(p);
+        }
     }
 
     // Use for testing
@@ -47,6 +59,8 @@ public class PassengerService {
                 // Add a new passenger if no matching nationalId exists
                 passengerRepository.save(passenger);
             }
+            walletRepository.findByUserId(passenger.getUserId())
+                .orElseGet(() -> walletRepository.save(new Wallet(passenger.getUserId(), 0)));
         }
     }
 

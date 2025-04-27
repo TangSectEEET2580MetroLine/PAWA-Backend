@@ -61,6 +61,13 @@ public class DataGenerator implements CommandLineRunner {
             true
         ));
 
+        users.add(new UserModel(
+            "bob.lee@example.com",
+            passwordEncoder.encode("passw0rd"),
+            "ADMIN",
+            true
+        ));
+
         // Add more users as needed for testing
         return users;
     }
@@ -110,6 +117,20 @@ public class DataGenerator implements CommandLineRunner {
             "S67890",
             false,
             true
+        ));
+
+        passengers.add(new Passenger(
+            savedUsers.get(3).getId(),
+            "Bob",
+            "C.",
+            "Lee",
+            "998877665",
+            LocalDate.of(1995, 7, 22),
+            "321 Pine St, Metropolis",
+            "9988776655",
+            null,
+            false,
+            false
         ));
 
         // Add more passengers as needed for testing

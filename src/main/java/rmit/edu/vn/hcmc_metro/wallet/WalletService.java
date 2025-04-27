@@ -2,6 +2,7 @@ package rmit.edu.vn.hcmc_metro.wallet;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -62,5 +63,23 @@ public class WalletService {
         }
         wallet.setBalance(wallet.getBalance() - amount);
         return walletRepository.save(wallet);
+    }
+
+    //Top up a wallet
+    @Transactional
+    public Wallet topUp(String userId, double amount) {
+        if (amount <= 0) throw new IllegalArgumentException("You have entered a negative top-up amount. Please try again with a positive value.");
+
+        Wallet wallet = walletRepository.findByUserId(userId)
+            .orElseThrow(() -> new RuntimeException("Wallet for userId " + userId + " not found."));
+        
+        wallet.setBalance(wallet.getBalance() + amount);
+        return walletRepository.save(wallet);
+    }
+
+    //Get a wallet's balance
+    public double getBalance(String userId) {
+        return walletRepository.findByUserId(userId).orElseThrow(() -> new RuntimeException("Wallet for userId " + userId + " not found."))
+            .getBalance();
     }
 }

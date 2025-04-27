@@ -9,6 +9,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/wallets")
+@CrossOrigin(origins = "http://localhost:3000")
 public class WalletController {
 
     @Autowired
@@ -78,6 +79,19 @@ public class WalletController {
             return new ResponseEntity<>(wallet, HttpStatus.OK);
         } catch (RuntimeException e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    //Top up a wallet
+    @PostMapping("/user/{userId}/top-up")
+    public ResponseEntity<Wallet> topUp(@PathVariable String userId, @RequestParam double amount) {
+        try {
+            Wallet wallet = walletService.topUp(userId, amount);
+            return ResponseEntity.ok(wallet);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().build();
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
         }
     }
 }
