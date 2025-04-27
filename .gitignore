@@ -1,3 +1,7 @@
+#IDE / OS Junk
+*.log
+
 # Maven build output
 /target/
 *.class
+
