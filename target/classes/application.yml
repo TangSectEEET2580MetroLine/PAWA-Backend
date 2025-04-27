@@ -1,7 +1,0 @@
-spring:
-  application:
-    name: springauth
-  data:
-    mongodb:
-      uri: mongodb://localhost:27017/PAWA-metro 
-      database: metroproject 
