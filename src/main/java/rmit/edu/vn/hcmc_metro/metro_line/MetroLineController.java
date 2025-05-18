@@ -1,19 +1,14 @@
 package rmit.edu.vn.hcmc_metro.metro_line;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import rmit.edu.vn.hcmc_metro.metro_line.DTO.TripDTO;
 
 @RestController
 @RequestMapping("/metro-line")
@@ -83,5 +78,20 @@ public class MetroLineController {
             return new ResponseEntity<>("Failed to update metro line: " + e.getMessage(),
                     HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    @GetMapping("/{lineId}/trips")
+    public ResponseEntity<List<TripDTO>> getTrips(
+            @PathVariable String lineId,
+            @RequestParam String fromStation,
+            @RequestParam String toStation,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+            LocalDateTime after,
+            @RequestParam(defaultValue = "3") int count
+    ) {
+        List<TripDTO> trips = metroLineService.getNextTrips(
+                lineId, fromStation, toStation, after, count
+        );
+        return ResponseEntity.ok(trips);
     }
 }

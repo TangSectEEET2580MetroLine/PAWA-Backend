@@ -40,7 +40,8 @@ public class SecurityConfig {
 				// 1) Public endpoints: login, register, tickets/**
 				.authorizeHttpRequests(requests -> requests
 						.requestMatchers("/api/auth/login", "/api/auth/register").permitAll()
-						.requestMatchers("/api/tickets/**").permitAll()         // <-- UNCOMMENTED
+						.requestMatchers("/api/tickets/**").permitAll()
+						.requestMatchers("/metro-line/**").permitAll()
 						// Passenger-only endpoints
 						.requestMatchers("/passenger/**").hasAnyRole(
 								RoleConfig.ADMIN.name(),

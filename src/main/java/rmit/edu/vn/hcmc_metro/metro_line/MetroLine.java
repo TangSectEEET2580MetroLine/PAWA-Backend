@@ -4,6 +4,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.time.LocalTime;
 import java.util.List;
 
 @Document(collection = "metro_lines") // Specify the MongoDB collection name
@@ -19,13 +20,19 @@ public class MetroLine {
 
   private int durationInMin;
 
+  // Habanero II.PA.3 schedule fields
+  private LocalTime firstDepartureTime;   // e.g., 05:30
+  private int frequencyInMinutes;
+
   public MetroLine() {
   }
 
-  public MetroLine(String name, List<String> stations, int durationInMin) {
+  public MetroLine(String name, List<String> stations, int durationInMin, LocalTime firstDepartureTime, int frequencyInMinutes) {
     this.name = name;
     this.stations = stations;
     this.durationInMin = durationInMin;
+    this.firstDepartureTime = firstDepartureTime;
+    this.frequencyInMinutes = frequencyInMinutes;
   }
 
   public String getId() {
@@ -58,6 +65,12 @@ public class MetroLine {
   public void setDurationInMin(int durationInMin) {
     this.durationInMin = durationInMin;
   }
+
+  public LocalTime getFirstDepartureTime() { return firstDepartureTime; }
+  public void setFirstDepartureTime(LocalTime t) { this.firstDepartureTime = t; }
+
+  public int getFrequencyInMinutes() { return frequencyInMinutes; }
+  public void setFrequencyInMinutes(int freq) { this.frequencyInMinutes = freq; }
 
   @Override
   public String toString() {

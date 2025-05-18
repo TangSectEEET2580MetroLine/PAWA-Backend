@@ -1,6 +1,7 @@
 package rmit.edu.vn.hcmc_metro.generator;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Component;
 import rmit.edu.vn.hcmc_metro.Passenger.Passenger;
 import rmit.edu.vn.hcmc_metro.Passenger.PassengerService;
 import rmit.edu.vn.hcmc_metro.metro_line.MetroLine;
+import rmit.edu.vn.hcmc_metro.metro_line.MetroLineRepository;
 import rmit.edu.vn.hcmc_metro.metro_line.MetroLineService;
 import rmit.edu.vn.hcmc_metro.userauth.UserModel;
 import rmit.edu.vn.hcmc_metro.userauth.UserService;
@@ -159,7 +161,7 @@ public class DataGenerator implements CommandLineRunner {
     }
 
     // Generate metro lines
-    public List<MetroLine> generateMetroLines() {
+    /*public List<MetroLine> generateMetroLines() {
         List<MetroLine> metroLines = new ArrayList<>();
 
         // Define stations for Line 1
@@ -187,34 +189,93 @@ public class DataGenerator implements CommandLineRunner {
         // Add Line 1 to the list
         metroLines.add(
             new MetroLine(
-                "Line 1",
-                metroLinesAndStations.get("Line 1"),
-                30
+                    "Line 1",
+                    metroLinesAndStations.get("Line 1"),
+                    30,
+                    LocalTime.of(5, 30),   // first departure
+                    10
             )
         );
-
-        // Generate lines 2 to 11
-        for (int i = 2; i <= 11; i++) {
-            final int stationCode = i;
-            metroLinesAndStations.put("Line " + i,
+            metroLinesAndStations.put("Line 2",
                 new ArrayList<>() {
                     {
-                        add(String.format("Line %d Station A", stationCode));
-                        add(String.format("Line %d Station B", stationCode));
-                        add(String.format("Line %d Station C", stationCode));
-                        add(String.format("Line %d Station D", stationCode));
+                        add("Ben Thanh Station");
+                        add("Tao Dan Station");
+                        add("Dan Chu Station");
+                        add("Hoa Hung Station");
+                        add("Le Thi Rieng Station");
+                        add("Pham Van Hai Station");
+                        add("Bay Hien Station");
+                        add("Nguyen Hong Dao Station");
+                        add("Ba Queo Station");
+                        add("Pham Van Bach Station");
+                        add("Tan Binh Station");
                     }
                 }
             );
             metroLines.add(
                 new MetroLine(
-                    "Line " + i,
-                    metroLinesAndStations.get("Line " + i),
-                    20 + i
+                        "Line 2 " ,
+                        metroLinesAndStations.get("Line 2" ),
+                        20 + 2,
+                        LocalTime.of(6, 30),   // first bus at 5:30am
+                        10                    // frequency in minutes
                 )
             );
-        }
+
 
         return metroLines;
+    }*/
+    private List<MetroLine> generateMetroLines() {
+        List<MetroLine> lines = new ArrayList<>();
+
+        // Line 1
+        List<String> line1Stations = List.of(
+                "Ben Thanh Station",
+                "Opera House Station",
+                "Ba Son Station",
+                "Van Thanh Park Station",
+                "Tan Cang Station",
+                "Thao Dien Station",
+                "An Phu Station",
+                "Rach Chiec Station",
+                "Phuoc Long Station",
+                "Binh Thai Station",
+                "Thu Duc Station",
+                "Hi-Tech Park Station",
+                "National University Station",
+                "Suoi Tien Terminal Station"
+        );
+        lines.add(new MetroLine(
+                "Line 1",
+                line1Stations,
+                30,
+                LocalTime.of(5, 30),
+                10
+        ));
+
+        // Line 2
+        List<String> line2Stations = List.of(
+                "Ben Thanh Station",
+                "Tao Dan Station",
+                "Dan Chu Station",
+                "Hoa Hung Station",
+                "Le Thi Rieng Station",
+                "Pham Van Hai Station",
+                "Bay Hien Station",
+                "Nguyen Hong Dao Station",
+                "Ba Queo Station",
+                "Pham Van Bach Station",
+                "Tan Binh Station"
+        );
+        lines.add(new MetroLine(
+                "Line 2",
+                line2Stations,
+                22,
+                LocalTime.of(6, 30),
+                10
+        ));
+
+        return lines;
     }
 }

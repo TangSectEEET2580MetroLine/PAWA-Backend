@@ -76,7 +76,7 @@ public class AuthRequestFilter extends OncePerRequestFilter {
 						new WebAuthenticationDetailsSource().buildDetails(request)
 				);
 				SecurityContextHolder.getContext().setAuthentication(authToken);
-				System.out.println("✅ Authenticated user: " + username);
+				System.out.println(" Authenticated user: " + username);
 			}
 		}
 
