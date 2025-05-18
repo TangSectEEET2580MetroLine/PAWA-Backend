@@ -3,48 +3,83 @@ package rmit.edu.vn.hcmc_metro.ticket;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
-@Document(collection = "tickets") // Specifies the MongoDB collection name
+@Document(collection = "tickets")
 public class Ticket {
 
     @Id
-    private String id; // MongoDB will auto-generate this ID
-    private String ticketTypeId; // Reference to the TicketType
-    private String userId; // Reference to the User who owns the ticket
-    private String metroDepartureId; // Reference to the departure metro station
-    private String metroArrivalId; // Reference to the arrival metro station
-    private TicketStatus status; // Status of the ticket (ACTIVE, INACTIVE, EXPIRED)
-    private Date issueDate; // Date when the ticket was issued
-    private Date expiryDate; // Date when the ticket expires
+    private String id;
 
-    // Constructors
-    public Ticket() {
+    // Reference to your TicketType config
+    private String ticketTypeId;
+
+    // The passenger who owns this ticket
+    private String userId;
+    // Metro line ID for line station
+    private String metroLineId;
+
+    // Human-readable station names
+    private String departureStation;
+    private String arrivalStation;
+
+    // Computed distance in number of stops
+    private int numberOfStations;
+
+    // Fare charged
+    private double price;
+
+    private TicketStatus status;
+
+    // When the ticket was issued
+    private LocalDateTime issueDate;
+
+    // When it expires
+    private LocalDateTime expiryDate;
+
+    public Ticket() { }
+
+    public Ticket(String ticketTypeId,
+                  String userId,
+                  String metroLineId,
+                  String departureStation,
+                  String arrivalStation,
+                  int numberOfStations,
+                  double price,
+                  TicketStatus status,
+                  LocalDateTime issueDate,
+                  LocalDateTime expiryDate) {
+        this.ticketTypeId      = ticketTypeId;
+        this.userId            = userId;
+        this.metroLineId       = metroLineId;
+        this.departureStation  = departureStation;
+        this.arrivalStation    = arrivalStation;
+        this.numberOfStations  = numberOfStations;
+        this.price             = price;
+        this.status            = status;
+        this.issueDate         = issueDate;
+        this.expiryDate        = expiryDate;
     }
 
-    public Ticket(String ticketTypeId, String userId, String metroDepartureId, String metroArrivalId, TicketStatus status, Date issueDate, Date expiryDate) {
-        this.ticketTypeId = ticketTypeId;
-        this.userId = userId;
-        this.metroDepartureId = metroDepartureId;
-        this.metroArrivalId = metroArrivalId;
-        this.status = status;
-        this.issueDate = issueDate;
-        this.expiryDate = expiryDate;
-    }
+    // ─── Getters & Setters ─────────────────────────────────────────────────────────
 
-    // Getters and Setters
     public String getId() {
         return id;
     }
-
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getMetroLineId() {
+        return metroLineId;
+    }
+    public void setMetroLineId(String metroLineId) {
+        this.metroLineId = metroLineId;
     }
 
     public String getTicketTypeId() {
         return ticketTypeId;
     }
-
     public void setTicketTypeId(String ticketTypeId) {
         this.ticketTypeId = ticketTypeId;
     }
@@ -52,48 +87,56 @@ public class Ticket {
     public String getUserId() {
         return userId;
     }
-
     public void setUserId(String userId) {
         this.userId = userId;
     }
 
-    public String getMetroDepartureId() {
-        return metroDepartureId;
+    public String getDepartureStation() {
+        return departureStation;
+    }
+    public void setDepartureStation(String departureStation) {
+        this.departureStation = departureStation;
     }
 
-    public void setMetroDepartureId(String metroDepartureId) {
-        this.metroDepartureId = metroDepartureId;
+    public String getArrivalStation() {
+        return arrivalStation;
+    }
+    public void setArrivalStation(String arrivalStation) {
+        this.arrivalStation = arrivalStation;
     }
 
-    public String getMetroArrivalId() {
-        return metroArrivalId;
+    public int getNumberOfStations() {
+        return numberOfStations;
+    }
+    public void setNumberOfStations(int numberOfStations) {
+        this.numberOfStations = numberOfStations;
     }
 
-    public void setMetroArrivalId(String metroArrivalId) {
-        this.metroArrivalId = metroArrivalId;
+    public double getPrice() {
+        return price;
+    }
+    public void setPrice(double price) {
+        this.price = price;
     }
 
     public TicketStatus getStatus() {
         return status;
     }
-
     public void setStatus(TicketStatus status) {
         this.status = status;
     }
 
-    public Date getIssueDate() {
+    public LocalDateTime getIssueDate() {
         return issueDate;
     }
-
-    public void setIssueDate(Date issueDate) {
+    public void setIssueDate(LocalDateTime issueDate) {
         this.issueDate = issueDate;
     }
 
-    public Date getExpiryDate() {
+    public LocalDateTime getExpiryDate() {
         return expiryDate;
     }
-
-    public void setExpiryDate(Date expiryDate) {
+    public void setExpiryDate(LocalDateTime expiryDate) {
         this.expiryDate = expiryDate;
     }
 
@@ -103,8 +146,10 @@ public class Ticket {
                 "id='" + id + '\'' +
                 ", ticketTypeId='" + ticketTypeId + '\'' +
                 ", userId='" + userId + '\'' +
-                ", metroDepartureId='" + metroDepartureId + '\'' +
-                ", metroArrivalId='" + metroArrivalId + '\'' +
+                ", departureStation='" + departureStation + '\'' +
+                ", arrivalStation='" + arrivalStation + '\'' +
+                ", numberOfStations=" + numberOfStations +
+                ", price=" + price +
                 ", status=" + status +
                 ", issueDate=" + issueDate +
                 ", expiryDate=" + expiryDate +

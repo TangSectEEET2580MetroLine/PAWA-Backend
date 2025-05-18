@@ -12,6 +12,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import rmit.edu.vn.hcmc_metro.filter.AuthRequestFilter;
+import rmit.edu.vn.hcmc_metro.security_config.RoleConfig;
 
 @Configuration
 @EnableWebSecurity
@@ -20,33 +21,49 @@ public class SecurityConfig {
 	@Autowired
 	private AuthRequestFilter authRequestFilter;
 
-
 	@Bean
-	public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
-		return authenticationConfiguration.getAuthenticationManager();
+	public AuthenticationManager authManager(AuthenticationConfiguration authConfig) throws Exception {
+		return authConfig.getAuthenticationManager();
 	}
 
 	@Bean
 	public BCryptPasswordEncoder defaultEncoder() {
-			return new BCryptPasswordEncoder();
+		return new BCryptPasswordEncoder();
 	}
 
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		http
-			.csrf(csrf -> csrf.disable())
-			.authorizeHttpRequests((requests) -> requests
-				.requestMatchers("/login", "/register").permitAll()
-				.requestMatchers("/passenger/**").hasAnyRole(
-					RoleConfig.ADMIN.name(), 
-					RoleConfig.PASSENGER.name()
-				)
-				.anyRequest().authenticated()
-			);
+				// Disable CSRF for our REST API
+				.csrf(csrf -> csrf.disable())
 
-		http.addFilterBefore(authRequestFilter, 
-				UsernamePasswordAuthenticationFilter.class);
+				// 1) Public endpoints: login, register, tickets/**
+				.authorizeHttpRequests(requests -> requests
+						.requestMatchers("/api/auth/login", "/api/auth/register").permitAll()
+						.requestMatchers("/api/tickets/**").permitAll()         // <-- UNCOMMENTED
+						// Passenger-only endpoints
+						.requestMatchers("/passenger/**").hasAnyRole(
+								RoleConfig.ADMIN.name(),
+								RoleConfig.PASSENGER.name()
+						)
+						// All other endpoints require authentication
+						.anyRequest().authenticated()
+				);
+
+		// 2) Insert our JWT filter before the UsernamePasswordAuthenticationFilter
+		http.addFilterBefore(authRequestFilter, UsernamePasswordAuthenticationFilter.class);
 
 		return http.build();
-    }  
+	}
+
+	/*@Bean
+	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+		http
+				.csrf(csrf -> csrf.disable())
+				// **ALLOW EVERY REQUEST** (no security at all)
+				.authorizeHttpRequests(auth -> auth
+						.anyRequest().permitAll()
+				);
+		return http.build();
+	}*/
 }

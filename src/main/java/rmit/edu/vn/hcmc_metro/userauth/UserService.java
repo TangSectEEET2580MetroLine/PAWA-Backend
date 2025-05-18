@@ -11,6 +11,12 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
+import java.util.UUID;
+import java.util.List;
+import jakarta.validation.Valid;
+import org.springframework.validation.BindingResult;
+
 import rmit.edu.vn.hcmc_metro.jwt.JwtUtil;
 
 @Component
@@ -21,6 +27,7 @@ public class UserService implements UserDetailsService {
 
     @Autowired
     private UserRepository userRepository;
+
 
     public UserModel createUser(UserModel user) {
         return userRepository.save(user);

@@ -1,11 +1,15 @@
 package rmit.edu.vn.hcmc_metro.Passenger;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import jakarta.validation.Valid;
+import org.springframework.validation.BindingResult;
 
 @RestController
 @RequestMapping("/passenger")
@@ -22,15 +26,16 @@ public class PassengerController {
     }
 
     @GetMapping("/{passengerId}")
-    public ResponseEntity<Passenger> getPassengerById(@PathVariable String passengerId) {
-        System.out.println("Fetching passenger with ID: " + passengerId);
-        Passenger passenger = passengerService.getPassengerById(passengerId);
-        if (passenger == null) {
-            System.out.println("Passenger not found with ID: " + passengerId);
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        System.out.println("Passenger found: " + passenger);
-        return new ResponseEntity<>(passenger, HttpStatus.OK);
+    public ResponseEntity<Passenger> getPassengerById(
+            @PathVariable String passengerId
+    ) {
+        Optional<Passenger> opt = passengerService.getPassengerById(passengerId);
+        return opt
+                .map(passenger -> ResponseEntity.ok(passenger))
+                .orElseGet(() -> ResponseEntity
+                        .status(HttpStatus.NOT_FOUND)
+                        .body(null)
+                );
     }
 
     @PostMapping("/add")

@@ -61,4 +61,10 @@ public class MetroLineService {
     public void deleteMetroLine(String metroLineId) {
         metroLineRepository.deleteById(metroLineId);
     }
+
+
+    public MetroLine getLineById(String id) {
+        return metroLineRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Line not found: " + id));
+    }
 }

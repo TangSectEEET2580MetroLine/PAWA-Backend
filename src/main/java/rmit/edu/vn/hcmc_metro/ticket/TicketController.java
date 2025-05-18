@@ -62,7 +62,7 @@ public class TicketController {
     }
 
     @PostMapping("/purchase")
-    public ResponseEntity<String> purchaseTicket(@RequestBody PurchaseTicketRequest request) {
+    public ResponseEntity<String> purchaseTicket(@RequestBody PurchaseTicketRequestDTO request) {
         try {
             ticketService.purchaseTicket(request);
             return new ResponseEntity<>("Ticket purchased successfully!", HttpStatus.CREATED);
