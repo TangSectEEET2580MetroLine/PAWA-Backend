@@ -60,4 +60,31 @@ public class TicketCartController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
+
+    // Add ticket to cart
+    @PostMapping("/add")
+    public ResponseEntity<TicketCart> addTicketToCart(@RequestBody TicketCartRequestDTO request) {
+        TicketCart updated = ticketCartService.addTicket(
+                request.getUserId(),
+                request.getTicketTypeId(),
+                request.getQuantity()
+        );
+        return new ResponseEntity<>(updated, HttpStatus.OK);
+    }
+
+    // Remove ticket item from cart
+    @DeleteMapping("/remove/{userId}/{itemId}")
+    public ResponseEntity<TicketCart> removeTicketFromCart(
+            @PathVariable String userId,
+            @PathVariable String itemId) {
+        TicketCart updated = ticketCartService.removeTicket(userId, itemId);
+        return new ResponseEntity<>(updated, HttpStatus.OK);
+    }
+
+    // Clear all items in cart
+    @PostMapping("/clear/{userId}")
+    public ResponseEntity<TicketCart> clearCart(@PathVariable String userId) {
+        TicketCart cleared = ticketCartService.clearCart(userId);
+        return new ResponseEntity<>(cleared, HttpStatus.OK);
+    }
 }

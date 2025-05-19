@@ -1,28 +1,42 @@
 package rmit.edu.vn.hcmc_metro.ticket_cart;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-@Document(collection = "ticket_carts") // Specifies the MongoDB collection name
+@Document(collection = "ticket_carts")
 public class TicketCart {
 
     @Id
-    private String id; // Unique cart ID
-    private String userId; // Reference to the User who owns the cart
-    private List<String> ticketIds; // List of ticket IDs in the cart
+    private String id;
+
+    private String userId;
+
+    private List<TicketCartItem> items = new ArrayList<>();
 
     // Constructors
     public TicketCart() {
     }
 
-    public TicketCart(String userId, List<String> ticketIds) {
+    public TicketCart(String userId) {
         this.userId = userId;
-        this.ticketIds = ticketIds;
     }
 
-    // Getters and Setters
+    public List<TicketCartItem> getItems() {
+        return items;
+    }
+
+    public void setItems(List<TicketCartItem> items) {
+        this.items = items;
+    }
+
+    public int getTotalPrice() {
+        return items.stream().mapToInt(TicketCartItem::getSubtotal).sum();
+    }
+
+    // Other getters/setters
     public String getId() {
         return id;
     }
@@ -37,22 +51,5 @@ public class TicketCart {
 
     public void setUserId(String userId) {
         this.userId = userId;
-    }
-
-    public List<String> getTicketIds() {
-        return ticketIds;
-    }
-
-    public void setTicketIds(List<String> ticketIds) {
-        this.ticketIds = ticketIds;
-    }
-
-    @Override
-    public String toString() {
-        return "TicketCart{" +
-                "id='" + id + '\'' +
-                ", userId='" + userId + '\'' +
-                ", ticketIds=" + ticketIds +
-                '}';
     }
 }

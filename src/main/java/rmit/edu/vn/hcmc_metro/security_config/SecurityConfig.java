@@ -42,6 +42,9 @@ public class SecurityConfig {
 						.requestMatchers("/api/auth/login", "/api/auth/register").permitAll()
 						.requestMatchers("/api/tickets/**").permitAll()
 						.requestMatchers("/metro-line/**").permitAll()
+						.requestMatchers("/api/wallets/**").permitAll()
+						.requestMatchers("/api/ticket-carts/**").permitAll()
+						.requestMatchers("/api/ticket-types/**").permitAll()
 						// Passenger-only endpoints
 						.requestMatchers("/passenger/**").hasAnyRole(
 								RoleConfig.ADMIN.name(),

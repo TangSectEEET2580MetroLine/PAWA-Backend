@@ -1,5 +1,7 @@
 package rmit.edu.vn.hcmc_metro.ticket;
 
+
+
 public class PurchaseTicketRequestDTO {
     private String passengerId;
     private String ticketType; // example: "ONE_WAY", "DAILY", "THREE_DAY", "MONTHLY_STUDENT", "MONTHLY_ADULT", "FREE"

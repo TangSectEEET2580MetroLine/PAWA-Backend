@@ -60,4 +60,6 @@ public class TicketTypeController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
+
+
 }
