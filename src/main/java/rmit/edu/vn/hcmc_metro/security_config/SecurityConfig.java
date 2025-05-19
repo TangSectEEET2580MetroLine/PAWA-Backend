@@ -10,7 +10,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import rmit.edu.vn.hcmc_metro.userauth.OAuth2SuccessHandler;
 
 import rmit.edu.vn.hcmc_metro.filter.AuthRequestFilter;
 import rmit.edu.vn.hcmc_metro.security_config.RoleConfig;
@@ -21,8 +20,6 @@ public class SecurityConfig {
 
 	@Autowired
 	private AuthRequestFilter authRequestFilter;
-	@Autowired
-	private OAuth2SuccessHandler oAuth2SuccessHandler;
 
 	@Bean
 	public AuthenticationManager authManager(AuthenticationConfiguration authConfig) throws Exception {
@@ -37,32 +34,30 @@ public class SecurityConfig {
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		http
+				// Disable CSRF for our REST API
 				.csrf(csrf -> csrf.disable())
 
+				// 1) Public endpoints: login, register, tickets/**
 				.authorizeHttpRequests(requests -> requests
-						.requestMatchers(
-								"/api/auth/login",
-								"/api/auth/register",
-								"/api/tickets/**",
-								"/metro-line/**",
-								"/api/wallets/**",
-								"/api/ticket-carts/**",
-								"/api/ticket-types/**",
-								"/passenger/*/upload-id",
-								"/oauth2/**",
-								"/login/oauth2/**"
-						).permitAll()
-
+						.requestMatchers("/api/auth/login", "/api/auth/register").permitAll()
+						.requestMatchers("/api/tickets/**").permitAll()
+						.requestMatchers("/metro-line/**").permitAll()
+						.requestMatchers("/api/wallets/**").permitAll()
+						.requestMatchers("/api/ticket-carts/**").permitAll()
+						.requestMatchers("/api/ticket-types/**").permitAll()
+						.requestMatchers("/api/payments/**").permitAll()
+						.requestMatchers("/passenger/*/upload-id").permitAll()
+						.requestMatchers("/passenger/*/update-id").permitAll()
+						// Passenger-only endpoints
 						.requestMatchers("/passenger/**").hasAnyRole(
 								RoleConfig.ADMIN.name(),
 								RoleConfig.PASSENGER.name()
 						)
-
+						// All other endpoints require authentication
 						.anyRequest().authenticated()
-				)
+				);
 
-				.oauth2Login(oauth -> oauth.successHandler(oAuth2SuccessHandler));
-
+		// 2) Insert our JWT filter before the UsernamePasswordAuthenticationFilter
 		http.addFilterBefore(authRequestFilter, UsernamePasswordAuthenticationFilter.class);
 
 		return http.build();

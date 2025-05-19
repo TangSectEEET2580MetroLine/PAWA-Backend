@@ -1,10 +1,11 @@
 package rmit.edu.vn.hcmc_metro.Passenger;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,11 +25,6 @@ public class PassengerController {
     @GetMapping("/profile/{userId}")
     public ResponseEntity<ProfileResponse> getProfile(@PathVariable String userId) {
         return ResponseEntity.ok(passengerService.getProfile(userId));
-    }
-
-    @PutMapping("/profile/{userId}")
-    public ResponseEntity<ProfileResponse> updateProfile(@PathVariable String userId, @RequestBody ProfileUpdateRequest req) {
-        return ResponseEntity.ok(passengerService.updateProfile(userId, req));
     }
 
     @GetMapping("/all")
@@ -106,18 +102,22 @@ public class PassengerController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Upload failed: " + e.getMessage());
         }
     }
-
-    // Controller: Replace POST with PUT for updating ID images
     @PutMapping("/{id}/update-id")
-    public ResponseEntity<String> updateIdImages(
+    public ResponseEntity<Map<String, String>> updateIdImages(
             @PathVariable String id,
             @RequestParam("front") MultipartFile front,
             @RequestParam("back") MultipartFile back) {
         try {
             passengerService.updateIdImages(id, front, back);
-            return ResponseEntity.ok("ID images updated successfully");
+
+            Map<String, String> result = new HashMap<>();
+            result.put("message", "ID images updated successfully");
+            return ResponseEntity.ok(result);
+
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Error: " + e.getMessage());
+            Map<String, String> error = new HashMap<>();
+            error.put("error", e.getMessage());
+            return ResponseEntity.status(400).body(error);
         }
     }
 }
