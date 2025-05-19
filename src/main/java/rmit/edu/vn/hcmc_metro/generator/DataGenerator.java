@@ -2,10 +2,7 @@ package rmit.edu.vn.hcmc_metro.generator;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -17,6 +14,9 @@ import rmit.edu.vn.hcmc_metro.Passenger.PassengerService;
 import rmit.edu.vn.hcmc_metro.metro_line.MetroLine;
 import rmit.edu.vn.hcmc_metro.metro_line.MetroLineRepository;
 import rmit.edu.vn.hcmc_metro.metro_line.MetroLineService;
+import rmit.edu.vn.hcmc_metro.ticket_type.TicketType;
+import rmit.edu.vn.hcmc_metro.ticket_type.TicketTypeName;
+import rmit.edu.vn.hcmc_metro.ticket_type.TicketTypeRepository;
 import rmit.edu.vn.hcmc_metro.userauth.UserModel;
 import rmit.edu.vn.hcmc_metro.userauth.UserService;
 
@@ -35,6 +35,9 @@ public class DataGenerator implements CommandLineRunner {
 
     @Autowired
     private BCryptPasswordEncoder passwordEncoder; // Inject BCryptPasswordEncoder
+
+    @Autowired
+    private TicketTypeRepository ticketTypeRepository;
 
     private Map<String, ArrayList<String>> metroLinesAndStations = new HashMap<>();
 
@@ -158,6 +161,20 @@ public class DataGenerator implements CommandLineRunner {
         metroLineService.addMetroLinesFirst(metroLines);
         System.out.println("Metro lines added to the repository:");
         metroLines.forEach(System.out::println);
+
+        // 4. Generate ticket types if not exist
+        if (ticketTypeRepository.count() == 0) {
+            List<TicketType> ticketTypes = List.of(
+                    new TicketType("Free Ticket", 0, new Date(), "None", 0, 0),
+                    new TicketType("One-way Ticket", 12000, new Date(), "None", 8, 1),
+                    new TicketType("Daily Ticket", 40000, new Date(), "None", 100, 0),
+                    new TicketType("Three-day Ticket", 90000, new Date(), "None", 100, 0),
+                    new TicketType("Monthly Ticket - Student", 150000, new Date(), "Student ID required", 999, 0),
+                    new TicketType("Monthly Ticket - Adult", 300000, new Date(), "None", 999, 0)
+            );
+            ticketTypeRepository.saveAll(ticketTypes);
+            System.out.println("Ticket types inserted.");
+        }
     }
 
     // Generate metro lines

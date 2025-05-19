@@ -3,6 +3,7 @@ package rmit.edu.vn.hcmc_metro.Passenger;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.web.multipart.MultipartFile;
 
 import rmit.edu.vn.hcmc_metro.wallet.Wallet;
 import rmit.edu.vn.hcmc_metro.wallet.WalletRepository;
@@ -11,6 +12,13 @@ import rmit.edu.vn.hcmc_metro.userauth.UserRepository;
 
 import java.util.List;
 import java.util.Optional;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.time.LocalDate;
+import java.util.*;
 
 @Service
 public class PassengerService {
@@ -183,5 +191,49 @@ public class PassengerService {
                     return passengerRepository.save(existing);
                 })
                 .orElse(null);
+    }
+
+    /** Upload front/back ID image for passenger */
+    public void uploadIdImages(String passengerId, MultipartFile front, MultipartFile back) throws IOException {
+        Optional<Passenger> optionalPassenger = passengerRepository.findById(passengerId);
+        if (optionalPassenger.isEmpty()) {
+            throw new RuntimeException("Passenger not found");
+        }
+
+        validateImage(front, "front");
+        validateImage(back, "back");
+
+        String uploadDir = "uploads/passenger_ids";
+        new File(uploadDir).mkdirs();
+
+        String frontFilename = passengerId + "_front." + getFileExtension(front);
+        String backFilename = passengerId + "_back." + getFileExtension(back);
+
+        Path frontPath = Paths.get(uploadDir, frontFilename);
+        Path backPath = Paths.get(uploadDir, backFilename);
+
+        Files.write(frontPath, front.getBytes());
+        Files.write(backPath, back.getBytes());
+
+        Passenger passenger = optionalPassenger.get();
+        passenger.setFrontIdImageUrl(frontPath.toString());
+        passenger.setBackIdImageUrl(backPath.toString());
+
+        passengerRepository.save(passenger);
+    }
+
+    private void validateImage(MultipartFile file, String fieldName) {
+        if (file.isEmpty()) throw new RuntimeException(fieldName + " image is empty");
+        if (file.getSize() > 5 * 1024 * 1024) throw new RuntimeException(fieldName + " image exceeds 5MB");
+
+        String contentType = file.getContentType();
+        if (!List.of("image/jpeg", "image/png").contains(contentType)) {
+            throw new RuntimeException(fieldName + " image must be JPEG or PNG");
+        }
+    }
+
+    private String getFileExtension(MultipartFile file) {
+        return Objects.requireNonNull(file.getOriginalFilename())
+                .substring(file.getOriginalFilename().lastIndexOf('.') + 1);
     }
 }

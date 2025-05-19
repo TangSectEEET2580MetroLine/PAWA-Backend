@@ -6,11 +6,13 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
@@ -84,6 +86,14 @@ public class JwtUtil {
 			return false;
 		}
 		return true;
+	}
+	public String generateTokenGoogle(String email) {
+		UserDetails user = new org.springframework.security.core.userdetails.User(
+				email,
+				"", // no password
+				List.of(new SimpleGrantedAuthority("ROLE_PASSENGER"))
+		);
+		return generateToken(user, email);
 	}
 	
 }
