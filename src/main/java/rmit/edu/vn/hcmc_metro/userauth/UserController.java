@@ -19,7 +19,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import rmit.edu.vn.hcmc_metro.security_config.HttpOnlyCookieConfig;
 
 @RestController
-// @CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "http://localhost:3001", allowCredentials = "true")
 class UserController {
 
     @Autowired
