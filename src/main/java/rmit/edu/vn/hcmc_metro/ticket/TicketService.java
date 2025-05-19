@@ -56,6 +56,23 @@ public class TicketService {
         throw new RuntimeException("Ticket with ID " + id + " not found.");
     }
 
+    public Ticket activateTicket(String ticketId) {
+        Ticket ticket = ticketRepository.findById(ticketId)
+                .orElseThrow(() -> new RuntimeException("Ticket not found: " + ticketId));
+        
+        switch (ticket.getStatus()) {
+            case INACTIVE -> {
+                ticket.setStatus(TicketStatus.ACTIVE);
+                return ticketRepository.save(ticket);
+            }
+            case ACTIVE -> {
+                return ticket;
+            }
+            case EXPIRED -> throw new RuntimeException("Unable to activate an expired ticket.");
+            default -> throw new RuntimeException("Unknown ticket status: " + ticket.getStatus());
+        }
+    }
+
     /**
      * Purchase a ticket on a specific metro line.
      */

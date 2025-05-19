@@ -81,4 +81,14 @@ public class TicketController {
         return new ResponseEntity<>(tickets, HttpStatus.OK);
     }
 
+    @PostMapping("/{id}/activate")
+    public ResponseEntity<Ticket> activateTicket(@PathVariable String id) {
+        try {
+            Ticket ticket = ticketService.activateTicket(id);
+            return new ResponseEntity<>(ticket, HttpStatus.OK);
+        } catch (RuntimeException e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
 }
