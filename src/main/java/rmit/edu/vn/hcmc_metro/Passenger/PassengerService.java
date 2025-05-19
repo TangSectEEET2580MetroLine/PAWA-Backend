@@ -236,4 +236,39 @@ public class PassengerService {
         return Objects.requireNonNull(file.getOriginalFilename())
                 .substring(file.getOriginalFilename().lastIndexOf('.') + 1);
     }
+
+    // Service: Add new method updateIdImages()
+    public void updateIdImages(String passengerId, MultipartFile front, MultipartFile back) throws IOException {
+        Optional<Passenger> optionalPassenger = passengerRepository.findById(passengerId);
+        if (optionalPassenger.isEmpty()) {
+            throw new RuntimeException("Passenger not found");
+        }
+
+        validateImage(front, "front");
+        validateImage(back, "back");
+
+        String uploadDir = "uploads/passenger_ids";
+        new File(uploadDir).mkdirs();
+
+        // Build file names
+        String frontFilename = passengerId + "_front." + getFileExtension(front);
+        String backFilename = passengerId + "_back." + getFileExtension(back);
+
+        Path frontPath = Paths.get(uploadDir, frontFilename);
+        Path backPath = Paths.get(uploadDir, backFilename);
+
+        // Delete old if exists
+        Files.deleteIfExists(frontPath);
+        Files.deleteIfExists(backPath);
+
+        // Write new files
+        Files.write(frontPath, front.getBytes());
+        Files.write(backPath, back.getBytes());
+
+        Passenger passenger = optionalPassenger.get();
+        passenger.setFrontIdImageUrl(frontPath.toString());
+        passenger.setBackIdImageUrl(backPath.toString());
+
+        passengerRepository.save(passenger);
+    }
 }

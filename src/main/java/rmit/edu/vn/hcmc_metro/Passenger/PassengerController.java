@@ -106,4 +106,18 @@ public class PassengerController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Upload failed: " + e.getMessage());
         }
     }
+
+    // Controller: Replace POST with PUT for updating ID images
+    @PutMapping("/{id}/update-id")
+    public ResponseEntity<String> updateIdImages(
+            @PathVariable String id,
+            @RequestParam("front") MultipartFile front,
+            @RequestParam("back") MultipartFile back) {
+        try {
+            passengerService.updateIdImages(id, front, back);
+            return ResponseEntity.ok("ID images updated successfully");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Error: " + e.getMessage());
+        }
+    }
 }
