@@ -1,6 +1,8 @@
 package rmit.edu.vn.hcmc_metro.Passenger;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +21,11 @@ public class PassengerController {
 
     @Autowired
     private PassengerService passengerService;
+
+    @GetMapping("/profile/{userId}")
+    public ResponseEntity<ProfileResponse> getProfile(@PathVariable String userId) {
+        return ResponseEntity.ok(passengerService.getProfile(userId));
+    }
 
     @GetMapping("/all")
     public List<Passenger> getAllPassengers() {
@@ -93,6 +100,24 @@ public class PassengerController {
             return ResponseEntity.ok("ID images uploaded successfully");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Upload failed: " + e.getMessage());
+        }
+    }
+    @PutMapping("/{id}/update-id")
+    public ResponseEntity<Map<String, String>> updateIdImages(
+            @PathVariable String id,
+            @RequestParam("front") MultipartFile front,
+            @RequestParam("back") MultipartFile back) {
+        try {
+            passengerService.updateIdImages(id, front, back);
+
+            Map<String, String> result = new HashMap<>();
+            result.put("message", "ID images updated successfully");
+            return ResponseEntity.ok(result);
+
+        } catch (Exception e) {
+            Map<String, String> error = new HashMap<>();
+            error.put("error", e.getMessage());
+            return ResponseEntity.status(400).body(error);
         }
     }
 }
