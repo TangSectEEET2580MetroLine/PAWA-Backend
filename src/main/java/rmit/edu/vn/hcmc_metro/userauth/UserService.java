@@ -94,4 +94,11 @@ public class UserService implements UserDetailsService {
                     .build();
         }
     }
+
+    public void deleteById(String id) {
+        userRepository.deleteById(id);
+    }
+    public void deleteAll() {
+        userRepository.deleteAll();
+    }
 }

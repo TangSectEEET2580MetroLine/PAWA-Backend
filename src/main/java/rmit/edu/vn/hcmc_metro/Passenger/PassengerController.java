@@ -25,18 +25,19 @@ public class PassengerController {
         return passengerService.getAllPassengers();
     }
 
-    @GetMapping("/{passengerId}")
-    public ResponseEntity<Passenger> getPassengerById(
-            @PathVariable String passengerId
-    ) {
-        Optional<Passenger> opt = passengerService.getPassengerById(passengerId);
-        return opt
-                .map(passenger -> ResponseEntity.ok(passenger))
-                .orElseGet(() -> ResponseEntity
-                        .status(HttpStatus.NOT_FOUND)
-                        .body(null)
-                );
-    }
+    //overlap
+    // @GetMapping("/{passengerId}")
+    // public ResponseEntity<Passenger> getPassengerById(
+    //         @PathVariable String passengerId
+    // ) {
+    //     Optional<Passenger> opt = passengerService.getPassengerById(passengerId);
+    //     return opt
+    //             .map(passenger -> ResponseEntity.ok(passenger))
+    //             .orElseGet(() -> ResponseEntity
+    //                     .status(HttpStatus.NOT_FOUND)
+    //                     .body(null)
+    //             );
+    // }
 
     @PostMapping("/add")
     public ResponseEntity<String> addPassenger(@RequestBody Passenger passenger) {
@@ -79,5 +80,17 @@ public class PassengerController {
             return new ResponseEntity<>("Failed to update passenger: " + e.getMessage(),
                     HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Passenger> findPassengerById(@PathVariable String id) {
+        System.out.println("Finding passenger with ID: " + id);
+        Passenger passenger = passengerService.findPassengerByUserId(id);
+        if (passenger == null) {
+            System.out.println("Passenger not found with ID: " + id);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        System.out.println("Passenger found: " + passenger);
+        return new ResponseEntity<>(passenger, HttpStatus.OK);
     }
 }

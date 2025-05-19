@@ -125,4 +125,7 @@ public class MetroLineService {
         return result;
     }
 
+    public void deleteAll() {
+        metroLineRepository.deleteAll();
+    }
 }
