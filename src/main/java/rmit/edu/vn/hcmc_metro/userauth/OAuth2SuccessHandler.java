@@ -43,6 +43,6 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
 
         // generate token and redirect to frontend
         String token = jwtUtil.generateTokenGoogle(email);
-        response.sendRedirect("http://localhost:3001/oauth2-success.html?token=" + token);
+        response.sendRedirect("http://localhost:3001/oauth2-success?token=" + token);
     }
 }
