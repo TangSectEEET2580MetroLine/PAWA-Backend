@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/passenger")
@@ -78,6 +79,20 @@ public class PassengerController {
             System.out.println("Failed to update passenger with ID " + id + ": " + e.getMessage());
             return new ResponseEntity<>("Failed to update passenger: " + e.getMessage(),
                     HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PostMapping("/{id}/upload-id")
+    public ResponseEntity<String> uploadIdImages(
+            @PathVariable String id,
+            @RequestParam("front") MultipartFile front,
+            @RequestParam("back") MultipartFile back) {
+
+        try {
+            passengerService.uploadIdImages(id, front, back);
+            return ResponseEntity.ok("ID images uploaded successfully");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Upload failed: " + e.getMessage());
         }
     }
 }

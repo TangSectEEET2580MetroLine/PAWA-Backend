@@ -45,6 +45,7 @@ public class SecurityConfig {
 						.requestMatchers("/api/wallets/**").permitAll()
 						.requestMatchers("/api/ticket-carts/**").permitAll()
 						.requestMatchers("/api/ticket-types/**").permitAll()
+						.requestMatchers("/passenger/*/upload-id").permitAll()
 						// Passenger-only endpoints
 						.requestMatchers("/passenger/**").hasAnyRole(
 								RoleConfig.ADMIN.name(),

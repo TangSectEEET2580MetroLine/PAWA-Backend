@@ -36,6 +36,10 @@ public class Passenger {
 
     private boolean revolutionaryContributionStatus;
 
+    private String frontIdImageUrl;
+
+    private String backIdImageUrl;
+
     public Passenger() {
     }
 
@@ -150,6 +154,22 @@ public class Passenger {
 
     public void setRevolutionaryContributionStatus(boolean revolutionaryContributionStatus) {
         this.revolutionaryContributionStatus = revolutionaryContributionStatus;
+    }
+
+    public String getFrontIdImageUrl() {
+        return frontIdImageUrl;
+    }
+
+    public void setFrontIdImageUrl(String frontIdImageUrl) {
+        this.frontIdImageUrl = frontIdImageUrl;
+    }
+
+    public String getBackIdImageUrl() {
+        return backIdImageUrl;
+    }
+
+    public void setBackIdImageUrl(String backIdImageUrl) {
+        this.backIdImageUrl = backIdImageUrl;
     }
 
     @Override
