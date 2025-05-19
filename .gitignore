@@ -1,5 +1,6 @@
 #IDE / OS Junk
 *.log
+.vscode/
 
 # Maven build output
 /target/

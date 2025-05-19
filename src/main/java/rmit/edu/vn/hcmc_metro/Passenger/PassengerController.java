@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +19,16 @@ public class PassengerController {
 
     @Autowired
     private PassengerService passengerService;
+
+    @GetMapping("/profile/{userId}")
+    public ResponseEntity<ProfileResponse> getProfile(@PathVariable String userId) {
+        return ResponseEntity.ok(passengerService.getProfile(userId));
+    }
+
+    @PutMapping("/profile/{userId}")
+    public ResponseEntity<ProfileResponse> updateProfile(@PathVariable String userId, @RequestBody ProfileUpdateRequest req) {
+        return ResponseEntity.ok(passengerService.updateProfile(userId, req));
+    }
 
     @GetMapping("/all")
     public List<Passenger> getAllPassengers() {

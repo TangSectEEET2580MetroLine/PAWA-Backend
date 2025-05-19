@@ -2,9 +2,12 @@ package rmit.edu.vn.hcmc_metro.Passenger;
 
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import rmit.edu.vn.hcmc_metro.wallet.Wallet;
 import rmit.edu.vn.hcmc_metro.wallet.WalletRepository;
+import rmit.edu.vn.hcmc_metro.userauth.UserModel;
+import rmit.edu.vn.hcmc_metro.userauth.UserRepository;
 
 import java.util.List;
 import java.util.Optional;
@@ -14,12 +17,70 @@ public class PassengerService {
 
     private final PassengerRepository passengerRepository;
     private final WalletRepository    walletRepository;
+    private final UserRepository userRepository;
+    private final BCryptPasswordEncoder encoder;
 
     @Autowired
     public PassengerService(PassengerRepository passengerRepository,
-                            WalletRepository walletRepository) {
+                            WalletRepository walletRepository, UserRepository userRepository, BCryptPasswordEncoder encoder ) {
         this.passengerRepository = passengerRepository;
         this.walletRepository    = walletRepository;
+        this.userRepository = userRepository;
+        this.encoder = encoder;
+    }
+
+    //Read the profile
+    public ProfileResponse getProfile(String userId) {
+        Passenger p = passengerRepository.findByUserId(userId)
+                         .orElseThrow(() -> new RuntimeException("Passenger not found"));
+        UserModel u = userRepository.findById(userId)
+                         .orElseThrow(() -> new RuntimeException("User not found"));
+        double balance = walletRepository.findByUserId(userId)
+                         .orElseThrow(() -> new RuntimeException("Wallet not found"))
+                         .getBalance();
+                         
+        return new ProfileResponse(
+            userId, u.getEmail(), p.getFirstName(), p.getMiddleName(), p.getLastName(),
+            p.getNationalId(), p.getDateOfBirth(), p.getResidenceAddress(),
+            p.getPhoneNumber(), p.getStudentId(), p.isDisabilityStatus(),
+            p.isRevolutionaryContributionStatus(), balance
+        );                     
+    }
+
+    //Update the profile
+    public ProfileResponse updateProfile(String userId, ProfileUpdateRequest req) {
+        Passenger p = passengerRepository.findByUserId(userId)
+                         .orElseThrow(() -> new RuntimeException("Passenger not found"));
+        
+        if (req.residenceAddress() != null) {
+            p.setResidenceAddress(req.residenceAddress());
+        }
+        if (req.phoneNumber() != null) {
+            p.setPhoneNumber(req.phoneNumber());
+        }  
+        passengerRepository.save(p);
+        
+        UserModel u = userRepository.findById(userId)
+                         .orElseThrow(() -> new RuntimeException("User not found"));
+        
+        if (req.email() != null) {
+            u.setEmail(req.email());
+        } 
+        if (req.password() != null) {
+            u.setPassword(encoder.encode(req.password()));
+        }
+        userRepository.save(u);
+        
+        double balance = walletRepository.findByUserId(userId)
+                         .orElseThrow(() -> new RuntimeException("Wallet not found"))
+                         .getBalance();
+        
+        return new ProfileResponse(
+            userId, u.getEmail(), p.getFirstName(), p.getMiddleName(), p.getLastName(),
+            p.getNationalId(), p.getDateOfBirth(), p.getResidenceAddress(),
+            p.getPhoneNumber(), p.getStudentId(), p.isDisabilityStatus(),
+            p.isRevolutionaryContributionStatus(), balance
+        );
     }
 
     /** Fetch all passengers */
