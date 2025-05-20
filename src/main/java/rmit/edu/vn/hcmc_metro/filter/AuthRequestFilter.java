@@ -59,6 +59,14 @@ public class AuthRequestFilter extends OncePerRequestFilter {
 			}
 		}
 
+		if (token == null) {
+			String authHeader = request.getHeader("Authorization");
+			if (authHeader != null && authHeader.startsWith("Bearer ")) {
+				token = authHeader.substring(7);
+				isValidToken = jwtUtil.verifyJwt(token);
+			}
+		}
+
 		if (token != null && isValidToken
 				&& SecurityContextHolder.getContext().getAuthentication() == null) {
 

@@ -27,6 +27,11 @@ public class PassengerController {
         return ResponseEntity.ok(passengerService.getProfile(userId));
     }
 
+    @PutMapping("/profile/{userId}")
+    public ResponseEntity<ProfileResponse> updateProfile(@PathVariable String userId, @RequestBody ProfileUpdateRequest req) {
+        return ResponseEntity.ok(passengerService.updateProfile(userId, req));
+    }
+
     @GetMapping("/all")
     public List<Passenger> getAllPassengers() {
         System.out.println("Fetching all passengers...");
