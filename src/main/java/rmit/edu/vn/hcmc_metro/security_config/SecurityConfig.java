@@ -79,6 +79,7 @@ public class SecurityConfig {
 						.requestMatchers("/api/payments/**").permitAll()
 						.requestMatchers("/passenger/*/upload-id").permitAll()
 						.requestMatchers("/passenger/*/update-id").permitAll()
+						.requestMatchers("/passenger/profile/{userId})").permitAll()
 
 						// Passenger-only endpoints
 						.requestMatchers("/passenger/**")
