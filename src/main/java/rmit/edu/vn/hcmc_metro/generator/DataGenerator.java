@@ -141,6 +141,11 @@ public class DataGenerator implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
+
+        //delete old data
+        userService.deleteAll();         // You need to implement this in UserService
+        passengerService.deleteAll();    // You need to implement this in PassengerService
+        metroLineService.deleteAll();
         // Generate and save users first
         List<UserModel> users = generateUsers();
         List<UserModel> savedUsers = userService.createUserFirst(users); // Save users and get their IDs

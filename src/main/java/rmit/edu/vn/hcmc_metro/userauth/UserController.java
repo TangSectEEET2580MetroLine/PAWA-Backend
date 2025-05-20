@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -34,13 +36,11 @@ class UserController {
     @PostMapping("/register")
     public ResponseEntity<UserModel> registerUser(@RequestBody UserModel user) {
 
-
         UserModel userWithHashedPassword = new UserModel(
                 user.getEmail(),
                 passwordEncoder.encode(user.getPassword()),
                 user.getRole(),
-                true
-        );
+                true);
 
         UserModel newUser = userService.createUser(userWithHashedPassword);
 
@@ -48,24 +48,19 @@ class UserController {
 
     }
 
-
-
     @PostMapping("/login")
     public ResponseEntity<DtoAuthResponse> login(
             HttpServletRequest request,
             HttpServletResponse response,
-            @RequestBody DtoLogin loginDto
-    ) {
+            @RequestBody DtoLogin loginDto) {
 
         String username = loginDto.getEmail();
         String password = loginDto.getPassword();
 
         try {
-            UsernamePasswordAuthenticationToken credentialToken
-                    = new UsernamePasswordAuthenticationToken(
+            UsernamePasswordAuthenticationToken credentialToken = new UsernamePasswordAuthenticationToken(
                     username,
-                    password
-            );
+                    password);
 
             Authentication token = authenticationManager.authenticate(credentialToken);
 
@@ -86,8 +81,7 @@ class UserController {
 
                 Cookie cookie = HttpOnlyCookieConfig.createCookie(
                         UserAuthConfig.USER_AUTH_COOKIE_NAME,
-                        userAuthJwtToken
-                );
+                        userAuthJwtToken);
 
                 response.addCookie(cookie);
 
@@ -103,6 +97,16 @@ class UserController {
 
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteUserById(@PathVariable String id) {
+        try {
+            userService.deleteById(id);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 }

@@ -7,3 +7,5 @@ spring:
     mongodb:
       uri: mongodb://localhost:27017/PAWA-metro 
       database: metroproject 
+  stripe:
+    secret-key: {STRIPE_SECRET_KEY}

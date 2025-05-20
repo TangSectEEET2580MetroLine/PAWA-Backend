@@ -123,4 +123,12 @@ public class PassengerService {
                 })
                 .orElse(null);
     }
+
+    public Passenger findPassengerByUserId(String userId) {
+        return passengerRepository.findByUserId(userId);
+    }
+
+    public void deleteAll() {
+        passengerRepository.deleteAll();
+    }
 }
